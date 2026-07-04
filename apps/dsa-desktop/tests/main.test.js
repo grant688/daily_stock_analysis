@@ -6,6 +6,8 @@ const fs = require('node:fs');
 const os = require('node:os');
 const path = require('node:path');
 
+const POSIX_PATH_DELIMITER = ':';
+
 function loadMainModule(t, options = {}) {
   const originalLoad = Module._load;
   const originalPlatform = Object.getOwnPropertyDescriptor(process, 'platform');
@@ -172,7 +174,7 @@ test('buildBackendEnvironment extends macOS GUI PATH with Homebrew CLI directori
     },
   });
 
-  const entries = env.PATH.split(path.delimiter);
+  const entries = env.PATH.split(POSIX_PATH_DELIMITER);
   assert.deepEqual(entries.slice(0, 4), ['/usr/bin', '/bin', '/usr/sbin', '/sbin']);
   assert.ok(entries.includes('/opt/homebrew/bin'));
   assert.ok(entries.includes('/usr/local/bin'));
@@ -493,7 +495,7 @@ test('extendMacDesktopBackendPath preserves existing order and avoids duplicates
   const extended = mainModule.extendMacDesktopBackendPath(
     '/opt/homebrew/bin:/custom/bin:/usr/bin:/custom/bin'
   );
-  const entries = extended.split(path.delimiter);
+  const entries = extended.split(POSIX_PATH_DELIMITER);
 
   assert.deepEqual(entries.slice(0, 3), ['/opt/homebrew/bin', '/custom/bin', '/usr/bin']);
   assert.equal(entries.filter((entry) => entry === '/opt/homebrew/bin').length, 1);

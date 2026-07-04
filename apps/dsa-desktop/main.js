@@ -46,6 +46,7 @@ const MAC_DESKTOP_SYSTEM_PATH_ENTRIES = Object.freeze([
   '/usr/sbin',
   '/sbin',
 ]);
+const DESKTOP_BACKEND_PATH_DELIMITER = isWindows ? ';' : ':';
 const DESKTOP_UPDATE_RUNTIME_RELATIVE_FILES = Object.freeze([
   '.env',
   path.join('data', 'stock_analysis.db'),
@@ -672,7 +673,7 @@ function extendMacDesktopBackendPath(rawPath) {
 
   const seen = new Set();
   const entries = String(rawPath || '')
-    .split(path.delimiter)
+    .split(DESKTOP_BACKEND_PATH_DELIMITER)
     .map((entry) => entry.trim())
     .filter(Boolean)
     .filter((entry) => {
@@ -690,7 +691,7 @@ function extendMacDesktopBackendPath(rawPath) {
     }
   });
 
-  return entries.join(path.delimiter);
+  return entries.join(DESKTOP_BACKEND_PATH_DELIMITER);
 }
 
 function normalizeBackendHost(value, fallback = '') {
